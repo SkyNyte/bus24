@@ -1,0 +1,294 @@
+  
+  bus details
+  
+   <meta charset="UTF-8">
+
+  <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge">-->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Bus Details</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <!--<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>-->
+
+    <link href="https://fonts.googleapis.com/css2?family=Asul:wght@700&family=Exo+2&family=Kanit&family=Labrada&family=Signika+Negative:wght@500&family=Source+Serif+Pro&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@500&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@500&family=Satisfy&display=swap" rel="stylesheet">
+
+    <!--<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous"/>-->
+
+    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+      <link rel="stylesheet" href="">
+
+    <script src=""></script>
+
+    
+    -----------------------------------------------------------------------------------
+    
+    insert into bus_detail(cust_id,bus_id,bus_no,seat_no,source,destination,departure_time,arrival_time,price,capacity)
+    
+    -----------------------------------------------------------------------------
+    
+    
+    // display the bus routes in a table
+             if(rs.next()){
+                 out.println("<table>");
+                 out.println("<tr> <th>Customer Id</th> <th>Bus Id</th> <th>Source</th> <th>Destination</th> <th>Departure Date</th> <th>Return Date</th> <th>Capacity</th></tr>");
+                 do{
+                 	out.print("<tr align='center'><td>"+rs.getInt(1)+"</td><td>"+rs.getInt(2)
+                 	+"</td><td>"+rs.getString(3)+"</td><td>"+rs.getString(4)
+                 	+"</td><td>"+rs.getDate(5)+"</td><td>"+rs.getDate(6)
+                 	+"</td><td>"+rs.getInt(7)+"</td></tr>");
+                 }while(rs.next());
+                 out.println("</table>");
+             }else{
+                 out.println("<p>No bus routes found between " + source + " and " + destination + ".</p>");
+             }
+            
+             // close the resources
+             rs.close();
+             ps1.close();
+             conn.close();
+  -----------------------------------------------------------
+             String source = request.getParameter("source");
+     String destination = request.getParameter("destination");
+     String departure_date=request.getParameter("departure_date");
+     String return_date=request.getParameter("return_date");
+     int capacity=Integer.parseInt(request.getParameter("capacity"));
+     if(source != null && destination != null){
+         try{
+             // create a database connection
+             String url = "jdbc:postgresql://localhost:5432/mydb";
+             String user = "postgres";
+             String password = "samusky18";
+             Class.forName("org.postgresql.Driver");
+         	Connection conn = DriverManager.getConnection(url, user, password);
+         	PreparedStatement ps1=null, ps2=null;
+         	//Query
+         	String sql1="insert into bus_detail(source,destination,departure_date,return_date,capacity) values('"+source+"','"+destination+"','"+departure_date+"','"+return_date+"','"+capacity+"')";
+         	String sql2="select * from bus_detail";
+         	ResultSet rs = null;
+         	ps1 = conn.prepareStatement(sql1);
+         	ps2 = conn.prepareStatement(sql2);
+         	
+         	rs1 = ps2.executeQuery();
+         	
+         	---------------------------------------------------------------
+         	
+         	
+  <%@ page import="java.sql.*" %>
+<%
+// Get the customer ID from the session (assuming it was previously set)
+int custId = (int) session.getAttribute("custId");
+
+// Get the form data from the request
+String source = request.getParameter("source");
+String destination = request.getParameter("destination");
+String departureDateStr = request.getParameter("departureDate");
+String returnDateStr = request.getParameter("returnDate");
+int capacity = Integer.parseInt(request.getParameter("capacity"));
+
+// Parse the departure and return dates
+DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+java.util.Date departureDate = dateFormat.parse(departureDateStr);
+java.util.Date returnDate = dateFormat.parse(returnDateStr);
+
+// Convert the dates to SQL date format
+java.sql.Date sqlDepartureDate = new java.sql.Date(departureDate.getTime());
+java.sql.Date sqlReturnDate = new java.sql.Date(returnDate.getTime());
+
+// Connect to the database
+String url = "jdbc:mysql://localhost/mydatabase";
+String user = "root";
+String password = "mypassword";
+Connection conn = DriverManager.getConnection(url, user, password);
+
+// Insert the data into the bus table
+String insertSql = "INSERT INTO bus (cust_id, source, destination, departure_date, return_date, capacity) VALUES (?, ?, ?, ?, ?, ?)";
+PreparedStatement stmt = conn.prepareStatement(insertSql);
+stmt.setInt(1, custId);
+stmt.setString(2, source);
+stmt.setString(3, destination);
+stmt.setDate(4, sqlDepartureDate);
+stmt.setDate(5, sqlReturnDate);
+stmt.setInt(6, capacity);
+int rowsInserted = stmt.executeUpdate();
+
+// Close the database connection
+stmt.close();
+conn.close();
+
+// Redirect back to the original page
+response.sendRedirect("original-page.jsp");
+%>
+             
+ -------------------------------------------------------------------
+ ADMIN PORTAL
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <script src="index.js"></script>
+</head>
+<body onload="login_alert()">
+        <!-- Section 1: Header-->
+        <div class="header">
+            
+        </div>
+        <div class="admin-frame">
+            <h3>ADMIN PORTAL</h3>
+            <hr>
+            <form id="form-submit" action="http://localhost:8080/Airline_Reservation_System/Admin_portal.jsp" method="post">
+                <div class="flight-detail">
+                    <div class="flight-name">
+                        <label>Flight Name: </label>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input type="text" placeholder="Enter flight name" name="flight-name" required>
+                    </div>
+                    &nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <div class="flight-id">
+                        <label>Flight ID: </label>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input type="text" placeholder="Enter flight Id '0' to update" name="flight-id" required>
+                    </div>
+                </div>
+                <div class="flight-locations">
+                    <div class="flight-src-loc">
+                        <label for="from">Source:</label>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <select required name='from' id="name">
+                            <option value="">Select a location...</option>
+                            <option value="Cambodia">Cambodia</option>
+                            <option value="Hong Kong">Hong Kong</option>
+                            <option value="India">India</option>
+                            <option value="Japan">Japan</option>
+                            <option value="Korea">Korea</option>
+                            <option value="Laos">Laos</option>
+                            <option value="Myanmar">Myanmar</option>
+                            <option value="Singapore">Singapore</option>
+                            <option value="Thailand">Thailand</option>
+                            <option value="Vietnam">Vietnam</option>
+                            <option value="Nepal">Nepal</option>
+                        </select>
+                    </div>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <div class="flight-dest-loc">
+                        <label for="to">Destination:</label>
+                        <select required name='to' id="dest">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <option value="">Select a location...</option>
+                            <option value="Cambodia">Cambodia</option>
+                            <option value="Hong Kong">Hong Kong</option>
+                            <option value="India">India</option>
+                            <option value="Japan">Japan</option>
+                            <option value="Korea">Korea</option>
+                            <option value="Laos">Laos</option>
+                            <option value="Myanmar">Myanmar</option>
+                            <option value="Singapore">Singapore</option>
+                            <option value="Thailand">Thailand</option>
+                            <option value="Vietnam">Vietnam</option>
+                            <option value="Nepal">Nepal</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="capacity-price">
+                    <div class="flight-capacity">
+                        <label>Capacity: </label>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input type="text" name="capacity" placeholder="Enter capacity" required>
+                    </div>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <div class="flight-price">
+                        <label>Price: </label>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input type="text" name="fprice" placeholder="Enter Price" required>
+                    </div>
+                </div>
+                <div class="flight-date">
+                    <div class="flight-dept-date">
+                            <label for="departure">Departure date:</label>
+                            <input name="departure-date" type="date" class="form-control date" required id="departure" placeholder="Select date...">
+                    </div>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <div class="flight-return-date">
+                            <label for="return">Return date:</label>
+                            <input name="return-date" type="date" class="form-control date" id="return" placeholder="Select date..." required>
+                    </div>
+                </div>
+                <div class="admin-buttons">
+                    <div class="flight-add">
+                        <button type="submit" id="form-submit" name="add" class="btn" required>ADD FLIGHT </button>
+                    </div>
+                    <div class="flight-delete">
+                        <button type="submit" id="form-submit" name="del" class="btn" required>DELETE FLIGHT</button>
+                    </div>
+                    <div class="flight-update">
+                        <button onclick="window.location.href='http://localhost:8080/Airline_Reservation_System/Passenger_detai.jsp'" id="passenger-submit" name="view" class="btn">PASSENGER</button>
+                    </div>
+                    </form>
+                    <div class="flight-view">
+                        <button type="submit" onclick="window.location.href='http://localhost:8080/Airline_Reservation_System/Flight_detail.jsp'" id="form-submit" name="view" class="btn">VIEW FLIGHT</button></a>
+                    </div>
+                </div>
+            </div>
+</body>
+</html>       
+
+
+
+
+
+
+CREATE TABLE ticket(cust_id INT NOT NULL,cust_name VARCHAR(40) NOT NULL,email VARCHAR(40) NOT NULL,phone_no BIGINT NOT NULL,source VARCHAR(40) NOT NULL,destination VARCHAR(40) NOT NULL,departure_date DATE NOT NULL,return_date DATE NOT NULL,capacity INT NOT NULL,FOREIGN KEY (cust_name, email, phone_no) REFERENCES customer(cust_name, email, phone_no),FOREIGN KEY (source, destination, departure_date, return_date, capacity) REFERENCES bus(source, destination, departure_date, return_date, capacity);
+
+-----------------------------------------------------
+
+<form method="POST" action="bus_detail.jsp">
+  <button class="button" id="lel" onclick="http://localhost:8080/Bus_24/.jsp"> Delete Bus Booking</button></form>
+------------------------------------------------------
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login</title>
+  </head>
+  <body>
+    <h1>Login</h1>
+    <form>
+      <label for="email">Email:</label>
+      <input class="un" type="email" id="email" name="email" required><br><br>
+      <label for="password">Password:</label>
+      <input class="un" type="password" id="password" name="password" required><br><br>
+      <button type="submit">Login</button>
+    </form>
+   
+    <script>
+      const form = document.querySelector('form');
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const email = document.querySelector('#email').value;
+        const password = document.querySelector('#password').value;
+       
+        // Replace with your own email and password
+        if (email === 'youremail@example.com' && password === 'yourpassword') {
+          alert('Login successful!');
+          // Redirect to homepage or dashboard
+        } else {
+          alert('Invalid email or password. Please try again.');
+        }
+      });
+    </script>
+  </body>
+</html>
+
+--------------------------------------------------------------
+
+INSERT INTO bus_ticket (c_name, c_email, c_phone_no, b_source, b_destination, b_departure_date, b_return_date, b_capacity) SELECT c.cust_name, c.email, c.phone_no, b.source, b.destination, b.departure_date, b.return_date, b.capacity FROM customer c, bus_details b WHERE c.cust_id = b.cust_id;
+
+
+INSERT INTO bus_ticket (c_name, c_email, c_phone_no, b_source, b_destination, b_departure_date, b_return_date, b_capacity) SELECT c.cust_name, c.email, c.phone_no, b.source, b.destination, b.departure_date, b.return_date, b.capacity FROM customer c, bus_details b WHERE c.cust_id = b.bus_id;
